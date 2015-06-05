@@ -292,6 +292,9 @@ static inline int cluster_first_cpu(struct sched_cluster *cluster)
 	return cpumask_first(&cluster->cpus);
 }
 
+extern bool have_sched_same_pwr_cost_cpus;
+extern cpumask_var_t sched_same_pwr_cost_cpus;
+
 #endif
 
 /* CFS-related fields in a runqueue */
