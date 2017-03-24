@@ -17,6 +17,7 @@
 #include <linux/types.h>
 #include <trace/events/power.h>
 #include <linux/moduleparam.h>
+#include <linux/display_state.h>
 
 #include "power.h"
 
@@ -463,7 +464,7 @@ static bool wakeup_source_blocker(struct wakeup_source *ws)
 {
 	unsigned int wslen = 0;
 
-	if (ws && ws->active) {
+	if (!is_display_on() && ws && ws->active) {
 		wslen = strlen(ws->name);
 
 		if ((!enable_ipa_ws && !strncmp(ws->name, "IPA_WS", wslen)) ||
@@ -798,6 +799,10 @@ void print_active_wakeup_sources(void)
 	int active = 0;
 	struct wakeup_source *last_activity_ws = NULL;
 
+	// kinda pointless to force this routine during screen on
+	if (is_display_on())
+		return;
+
 	rcu_read_lock();
 	list_for_each_entry_rcu(ws, &wakeup_sources, entry) {
 		if (ws->active) {
@@ -818,7 +823,6 @@ void print_active_wakeup_sources(void)
 			last_activity_ws->name);
 	rcu_read_unlock();
 }
-EXPORT_SYMBOL_GPL(pm_print_active_wakeup_sources);
 
 /**
  * pm_wakeup_pending - Check if power transition in progress should be aborted.
