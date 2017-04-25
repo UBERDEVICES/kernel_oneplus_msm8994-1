@@ -3115,14 +3115,14 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	strcpy(ts->test_limit_name,"tp/14049/14049_Limit_jdi.img");
 	TPD_DEBUG("synatpitcs_fw: fw_name = %s \n",ts->fw_name);
 
-	synaptics_wq = create_singlethread_workqueue("synaptics_wq");
+	synaptics_wq = alloc_ordered_workqueue("synaptics_wq", WQ_HIGHPRI);
 	if( !synaptics_wq ){
 		ret = -ENOMEM;
 		goto exit_createworkqueue_failed;
 	}
 	INIT_DELAYED_WORK(&ts->speed_up_work,speedup_synaptics_resume);
 
-	synaptics_report = create_singlethread_workqueue("synaptics_report");
+	synaptics_report = alloc_ordered_workqueue("synaptics_report", WQ_HIGHPRI);
 	if( !synaptics_report ){
 		ret = -ENOMEM;
 		goto exit_createworkqueue_failed;
