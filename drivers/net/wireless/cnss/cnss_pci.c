@@ -55,7 +55,7 @@
 #include <net/cnss_prealloc.h>
 #endif
 
-#include <linux/project_info.h>
+//#ifdef VENDOR_EDIT
 static u32 fw_version;
 static uint evmFlag = 0;
 
@@ -2751,9 +2751,6 @@ skip_ramdump:
 		pr_err("cnss: fw_image_setup sys file creation failed\n");
 		goto err_bus_reg;
 	}
-
-	/* product information */
-	push_component_info(WCN, "QCA6164A", "QualComm");
 
 	pr_info("cnss: Platform driver probed successfully.\n");
 	return ret;
