@@ -3432,19 +3432,6 @@
 	qcom,bcl {
 		compatible = "qcom,bcl";
 		qcom,bcl-disable;
-		qcom,bcl-framework-interface;
-		qcom,bcl-freq-control-list = <&CPU6 &CPU7>;
-		qcom,bcl-hotplug-list = <&CPU6 &CPU7>;
-		qcom,bcl-soc-hotplug-list = <&CPU6 &CPU7>;
-		qcom,ibat-monitor {
-			qcom,low-threshold-uamp = <3400000>;
-			qcom,high-threshold-uamp = <4200000>;
-			qcom,mitigation-freq-khz = <768000>;
-			qcom,vph-high-threshold-uv = <3500000>;
-			qcom,vph-low-threshold-uv = <3300000>;
-			qcom,soc-low-threshold = <20>;
-			qcom,thermal-handle = <&msm_thermal_freq>;
-		};
 	};
 
 	cnss: qcom,cnss@06300000 {
