@@ -481,7 +481,8 @@ static bool wakeup_source_blocker(struct wakeup_source *ws)
 			(!enable_battery &&
 				!strncmp(ws->name, "battery", wslen)) ||
 			(!enable_netlink_ws &&
-				!strncmp(ws->name, "NETLINK", wslen))) {
+				!strncmp(ws->name, "NETLINK", wslen)) ||
+			is_additional_wakeup_source(ws)) {
 			if (ws->active) {
 				wakeup_source_deactivate(ws);
 				pr_info("forcefully deactivate wakeup source: %s\n",
@@ -492,6 +493,17 @@ static bool wakeup_source_blocker(struct wakeup_source *ws)
 		}
 	}
 
+	return false;
+}
+
+static bool is_additional_wakeup_source(struct wakeup_source *ws)
+{
+	if(strstr(ws->name, "sensor") ||
+		strstr(ws->name, "smdcntl") ||
+		strstr(ws->name, "IPCRTR") ||
+		strstr(ws->name, "Sensor"))
+		return true;
+		
 	return false;
 }
 
