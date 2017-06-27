@@ -460,6 +460,18 @@ static void wakeup_source_deactivate(struct wakeup_source *ws)
 		wake_up(&wakeup_count_wait_queue);
 }
 
+
+static bool is_additional_wakeup_source(struct wakeup_source *ws)
+{
+	if(strstr(ws->name, "sensor") ||
+		strstr(ws->name, "smdcntl") ||
+		strstr(ws->name, "IPCRTR") ||
+		strstr(ws->name, "Sensor"))
+		return true;
+		
+	return false;
+}
+
 static bool wakeup_source_blocker(struct wakeup_source *ws)
 {
 	unsigned int wslen = 0;
@@ -493,17 +505,6 @@ static bool wakeup_source_blocker(struct wakeup_source *ws)
 		}
 	}
 
-	return false;
-}
-
-static bool is_additional_wakeup_source(struct wakeup_source *ws)
-{
-	if(strstr(ws->name, "sensor") ||
-		strstr(ws->name, "smdcntl") ||
-		strstr(ws->name, "IPCRTR") ||
-		strstr(ws->name, "Sensor"))
-		return true;
-		
 	return false;
 }
 
