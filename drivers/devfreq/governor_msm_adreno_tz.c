@@ -197,6 +197,13 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 	}
 
 	*freq = stats.current_frequency;
+
+	/* Prevent overflow */
+	if (stat.busy_time >= (1 << 24) || stat.total_time >= (1 << 24)) {
+		stat.busy_time >>= 7;
+		stat.total_time >>= 7;
+	}
+
 	priv->bin.total_time += stats.total_time;
 	priv->bin.busy_time += stats.busy_time;
 
