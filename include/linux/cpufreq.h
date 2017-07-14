@@ -443,7 +443,6 @@ extern struct cpufreq_governor cpufreq_gov_electron;
 extern struct cpufreq_governor cpufreq_gov_zzmoove;
 #define CPUFREQ_DEFAULT_GOVERNOR       (&cpufreq_gov_zzmoove)
 #endif
-#endif
 
 /*********************************************************************
  *                     FREQUENCY TABLE HELPERS                       *
