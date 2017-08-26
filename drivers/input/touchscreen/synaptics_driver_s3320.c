@@ -161,7 +161,7 @@ int DouSwip_gesture = 1; // "||"
 int Circle_gesture = 1; // "O"
 int UpVee_gesture = 1; //"V"
 int DownVee_gesture = 1; //"^"
-int DouTap_gesture = 0; //"double tap"
+int DouTap_gesture = 1; //"double tap"
 
 int Left2RightSwip_gesture = 0; //"(-->)"
 int Right2LeftSwip_gesture = 0; //"(<--)"
