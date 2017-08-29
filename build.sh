@@ -4,15 +4,15 @@
 #
 # Version 1.3, 11.10.2016
 #
-# (C) Lord Boeffla (aka andip71) Aviraxp
+# (C) Lord Boeffla (aka andip71), Aviraxp, RJ Trujillo
 
 #######################################
 # Parameters to be configured manually
 #######################################
 
-KAWORI_VERSION="TEST"
+KAWORI_VERSION="Lasagna"
 
-TOOLCHAIN="/home/aviraxp/Downloads/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9-ng7.1/bin/aarch64-linux-android-"
+TOOLCHAIN="../g49/bin/aarch64-linux-android-"
 ARCHITECTURE=arm64
 COMPILER_FLAGS_KERNEL=""
 COMPILER_FLAGS_MODULE=""
@@ -24,10 +24,10 @@ DTBTOOL_CMD=""
 MODULES_IN_SYSTEM="y"
 OUTPUT_FOLDER=""
 
-DEFCONFIG="kawori_defconfig"
+DEFCONFIG="zippy_defconfig"
 DEFCONFIG_VARIANT=""
 
-KERNEL_NAME="Kawori-Kernel"
+KERNEL_NAME="Zippy-Kernel"
 
 FINISH_MAIL_TO=""
 
@@ -75,7 +75,7 @@ if [ -f ~/x-settings.sh ]; then
 	. ~/x-settings.sh
 fi
 
-KAWORI_FILENAME="${KERNEL_NAME,,}-$KAWORI_VERSION"
+KAWORI_FILENAME="Zippy-Kernel-$KAWORI_VERSION"
 
 # set environment
 export ARCH=$ARCHITECTURE
@@ -100,7 +100,7 @@ step0_copy_code()
 
 	# Replace version information in mkcompile_h with the one from x-settings.sh
 	sed "s/\`echo \$LINUX_COMPILE_BY | \$UTS_TRUNCATE\`/$KERNEL_NAME-$KAWORI_VERSION-$KAWORI_DATE/g" -i $BUILD_PATH/scripts/mkcompile_h
-	sed "s/\`echo \$LINUX_COMPILE_HOST | \$UTS_TRUNCATE\`/aviraxp/g" -i $BUILD_PATH/scripts/mkcompile_h
+	sed "s/\`echo \$LINUX_COMPILE_HOST | \$UTS_TRUNCATE\`/certifiedblyndguy/g" -i $BUILD_PATH/scripts/mkcompile_h
 }
 
 step1_make_clean()
@@ -246,7 +246,7 @@ step4_prepare_anykernel()
 	cd $REPACK_PATH
 	KERNELNAME="Flashing $KERNEL_NAME $KAWORI_VERSION"
 	sed -i "s;###kernelname###;${KERNELNAME};" META-INF/com/google/android/update-binary;
-	COPYRIGHT="(c) Lord Boeffla (aka andip71), Aviraxp, $(date +%Y.%m.%d-%H:%M:%S)"
+	COPYRIGHT="(c) Lord Boeffla (aka andip71), Aviraxp, RJ Trujillo (CertifiedBlyndGuy), $(date +%Y.%m.%d-%H:%M:%S)"
 	sed -i "s;###copyright###;${COPYRIGHT};" META-INF/com/google/android/update-binary;
 }
 
