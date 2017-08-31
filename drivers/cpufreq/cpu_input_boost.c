@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014-2017, Sultanxda <sultanxda@gmail.com>
+ *           (C) 2017, Joe Maples <joe@frap129.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -33,6 +34,9 @@
  * don't go back to the absolute minimum freq
  */
 #define MINIMUM_FREQ_OVERRIDE_BIG 633600
+
+/* Fingerprint sensor input key */
+#define FINGERPRINT_KEY 0x2ee
 
 /* Available bits for boost_policy state */
 #define DRIVER_ENABLED        (1U << 0)
@@ -433,6 +437,11 @@ static const struct input_device_id cpu_ib_ids[] = {
 	{
 		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
 		.evbit = { BIT_MASK(EV_KEY) },
+	},
+	/* fingerprint sensor */
+	{
+		.flags = INPUT_DEVICE_ID_MATCH_KEYBIT,
+		.keybit = { [BIT_WORD(FINGERPRINT_KEY)] = BIT_MASK(FINGERPRINT_KEY) },
 	},
 	{ },
 };
