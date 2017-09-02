@@ -102,14 +102,15 @@ static ssize_t gpu_load_show(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
-	unsigned long sysfs_busy_perc;
+	unsigned long sysfs_busy_perc = 0;
 	/*
 	 * Average out the samples taken since last read
 	 * This will keep the average value in sync with
 	 * with the client sampling duration.
 	 */
 	spin_lock(&sample_lock);
-	sysfs_busy_perc = (acc_relative_busy * 100) / acc_total;
+	if (acc_total)
+		sysfs_busy_perc = (acc_relative_busy * 100) / acc_total;
 
 	/* Reset the parameters */
 	acc_total = 0;
@@ -261,7 +262,7 @@ static int tz_init(struct devfreq_msm_adreno_tz_data *priv,
 		memcpy(tz_buf, tz_pwrlevels, size_pwrlevels);
 		/* Ensure memcpy completes execution */
 		mb();
-		dmac_flush_range(tz_buf, tz_buf + PAGE_ALIGN(size_pwrlevels));
+		dmac_flush_range(tz_buf, (void *)tz_buf + PAGE_ALIGN(size_pwrlevels));
 
 		desc.args[0] = virt_to_phys(tz_buf);
 		desc.args[1] = size_pwrlevels;
