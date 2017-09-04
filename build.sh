@@ -10,7 +10,7 @@
 # Parameters to be configured manually
 #######################################
 
-KAWORI_VERSION="Mark-III"
+KAWORI_VERSION="OP2-Mark-III"
 
 TOOLCHAIN="../g49/bin/aarch64-linux-android-"
 ARCHITECTURE=arm64
@@ -100,7 +100,7 @@ step0_copy_code()
 
 	# Replace version information in mkcompile_h with the one from x-settings.sh
 	sed "s/\`echo \$LINUX_COMPILE_BY | \$UTS_TRUNCATE\`/$KERNEL_NAME-$KAWORI_VERSION-$KAWORI_DATE/g" -i $BUILD_PATH/scripts/mkcompile_h
-	sed "s/\`echo \$LINUX_COMPILE_HOST | \$UTS_TRUNCATE\`/certifiedblyndguy/g" -i $BUILD_PATH/scripts/mkcompile_h
+	sed "s/\`echo \$LINUX_COMPILE_HOST | \$UTS_TRUNCATE\`/RJ/g" -i $BUILD_PATH/scripts/mkcompile_h
 }
 
 step1_make_clean()
