@@ -35,9 +35,6 @@
  */
 #define MINIMUM_FREQ_OVERRIDE_BIG 633600
 
-/* Fingerprint sensor input key */
-#define FINGERPRINT_KEY 0x2ee
-
 /* Available bits for boost_policy state */
 #define DRIVER_ENABLED        (1U << 0)
 #define SCREEN_AWAKE          (1U << 1)
@@ -436,11 +433,6 @@ static const struct input_device_id cpu_ib_ids[] = {
 	{
 		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
 		.evbit = { BIT_MASK(EV_KEY) },
-	},
-	/* fingerprint sensor */
-	{
-		.flags = INPUT_DEVICE_ID_MATCH_KEYBIT,
-		.keybit = { [BIT_WORD(FINGERPRINT_KEY)] = BIT_MASK(FINGERPRINT_KEY) },
 	},
 	{ },
 };
