@@ -10,7 +10,7 @@
 # Parameters to be configured manually
 #######################################
 
-KAWORI_VERSION="OP2-Mark-III"
+KAWORI_VERSION="OP2-Mark-IV"
 
 TOOLCHAIN="../g49/bin/aarch64-linux-android-"
 ARCHITECTURE=arm64
