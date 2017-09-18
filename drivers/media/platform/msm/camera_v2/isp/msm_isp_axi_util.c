@@ -1010,11 +1010,8 @@ void msm_isp_axi_stream_update(struct vfe_device *vfe_dev,
 		}
 	}
 
-	spin_lock_irqsave(&vfe_dev->shared_data_lock, flags);
 	if (vfe_dev->axi_data.stream_update[frame_src])
 		vfe_dev->axi_data.stream_update[frame_src]--;
-
-	spin_unlock_irqrestore(&vfe_dev->shared_data_lock, flags);
 
 	if (vfe_dev->axi_data.pipeline_update == DISABLE_CAMIF ||
 		(vfe_dev->axi_data.pipeline_update ==
