@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# KAWORI Kernel Universal Build Script
+# ZIPPY Kernel Universal Build Script
 #
 # Version 1.3, 11.10.2016
 #
@@ -10,7 +10,7 @@
 # Parameters to be configured manually
 #######################################
 
-KAWORI_VERSION="OP2-Mark-IX"
+ZIPPY_VERSION="OP2-Mark-X"
 
 TOOLCHAIN="../g49/bin/aarch64-linux-android-"
 ARCHITECTURE=arm64
@@ -58,7 +58,7 @@ cd $SOURCE_PATH
 BUILD_PATH="$ROOT_PATH/build"
 REPACK_PATH="$ROOT_PATH/repack"
 
-KAWORI_DATE=$(date +%Y%m%d)
+ZIPPY_DATE=$(date +%Y%m%d)
 GIT_BRANCH=`git symbolic-ref --short HEAD`
 
 if [ -z "$NUM_CPUS" ]; then
@@ -75,7 +75,7 @@ if [ -f ~/x-settings.sh ]; then
 	. ~/x-settings.sh
 fi
 
-KAWORI_FILENAME="Zippy-Kernel-$KAWORI_VERSION"
+ZIPPY_FILENAME="Zippy-Kernel-$ZIPPY_VERSION"
 
 # set environment
 export ARCH=$ARCHITECTURE
@@ -99,7 +99,7 @@ step0_copy_code()
 	cp -r $SOURCE_PATH/* $BUILD_PATH
 
 	# Replace version information in mkcompile_h with the one from x-settings.sh
-	sed "s/\`echo \$LINUX_COMPILE_BY | \$UTS_TRUNCATE\`/$KERNEL_NAME-$KAWORI_VERSION-$KAWORI_DATE/g" -i $BUILD_PATH/scripts/mkcompile_h
+	sed "s/\`echo \$LINUX_COMPILE_BY | \$UTS_TRUNCATE\`/$KERNEL_NAME-$ZIPPY_VERSION-$ZIPPY_DATE/g" -i $BUILD_PATH/scripts/mkcompile_h
 	sed "s/\`echo \$LINUX_COMPILE_HOST | \$UTS_TRUNCATE\`/RJ/g" -i $BUILD_PATH/scripts/mkcompile_h
 }
 
@@ -163,8 +163,8 @@ step3_compile()
 			rm $BUILD_PATH/$OUTPUT_FOLDER/arch/$ARCHITECTURE/boot/dt.img
 		fi
 
-		chmod 777 tools_kawori/$DTBTOOL
-		tools_kawori/$DTBTOOL $DTBTOOL_CMD -o $BUILD_PATH/$OUTPUT_FOLDER/arch/$ARCHITECTURE/boot/dt.img -s 2048 -p $BUILD_PATH/$OUTPUT_FOLDER/scripts/dtc/ $BUILD_PATH/$OUTPUT_FOLDER/arch/$ARCHITECTURE/boot/
+		chmod 777 tools_zippy/$DTBTOOL
+		tools_zippy/$DTBTOOL $DTBTOOL_CMD -o $BUILD_PATH/$OUTPUT_FOLDER/arch/$ARCHITECTURE/boot/dt.img -s 2048 -p $BUILD_PATH/$OUTPUT_FOLDER/scripts/dtc/ $BUILD_PATH/$OUTPUT_FOLDER/arch/$ARCHITECTURE/boot/
 	fi
 
 	TIMESTAMP2=$(date +%s)
@@ -227,8 +227,8 @@ step4_prepare_anykernel()
 		find $BUILD_PATH -name '*.ko' -exec cp -av {} $MODULES_PATH \;
 
 		# copy static modules and rename from ko_ to ko, only if there are some
-		if [ "$(ls -A $BUILD_PATH/modules_KAWORI)" ]; then
-			cp $BUILD_PATH/modules_KAWORI/* $MODULES_PATH
+		if [ "$(ls -A $BUILD_PATH/modules_ZIPPY)" ]; then
+			cp $BUILD_PATH/modules_ZIPPY/* $MODULES_PATH
 			cd $MODULES_PATH
 			for i in *.ko_; do mv $i ${i%ko_}ko; echo Static module: ${i%ko_}ko; done
 		fi
@@ -244,7 +244,7 @@ step4_prepare_anykernel()
 
 	# replace variables in anykernel script
 	cd $REPACK_PATH
-	KERNELNAME="Flashing $KERNEL_NAME $KAWORI_VERSION"
+	KERNELNAME="Flashing $KERNEL_NAME $ZIPPY_VERSION"
 	sed -i "s;###kernelname###;${KERNELNAME};" META-INF/com/google/android/update-binary;
 	COPYRIGHT="(c) Lord Boeffla (aka andip71), Aviraxp, RJ Trujillo (CertifiedBlyndGuy), $(date +%Y.%m.%d-%H:%M:%S)"
 	sed -i "s;###copyright###;${COPYRIGHT};" META-INF/com/google/android/update-binary;
@@ -259,22 +259,22 @@ step5_create_anykernel_zip()
 
 	# create zip file
 	cd $REPACK_PATH
-	zip -r9 $KAWORI_FILENAME.recovery.zip * -x $KAWORI_FILENAME.recovery.zip
+	zip -r9 $ZIPPY_FILENAME.recovery.zip * -x $ZIPPY_FILENAME.recovery.zip
 
 	# sign recovery zip if there are keys available
-	if [ -f "$BUILD_PATH/tools_KAWORI/testkey.x509.pem" ]; then
+	if [ -f "$BUILD_PATH/tools_ZIPPY/testkey.x509.pem" ]; then
 		echo -e ">>> signing recovery zip\n"
-		java -jar $BUILD_PATH/tools_KAWORI/signapk.jar -w $BUILD_PATH/tools_KAWORI/testkey.x509.pem $BUILD_PATH/tools_KAWORI/testkey.pk8 $KAWORI_FILENAME.recovery.zip $KAWORI_FILENAME.recovery.zip_signed
-		cp $KAWORI_FILENAME.recovery.zip_signed $KAWORI_FILENAME.recovery.zip
-		rm $KAWORI_FILENAME.recovery.zip_signed
+		java -jar $BUILD_PATH/tools_ZIPPY/signapk.jar -w $BUILD_PATH/tools_ZIPPY/testkey.x509.pem $BUILD_PATH/tools_ZIPPY/testkey.pk8 $ZIPPY_FILENAME.recovery.zip $ZIPPY_FILENAME.recovery.zip_signed
+		cp $ZIPPY_FILENAME.recovery.zip_signed $ZIPPY_FILENAME.recovery.zip
+		rm $ZIPPY_FILENAME.recovery.zip_signed
 	fi
 
-	md5sum $KAWORI_FILENAME.recovery.zip > $KAWORI_FILENAME.recovery.zip.md5
+	md5sum $ZIPPY_FILENAME.recovery.zip > $ZIPPY_FILENAME.recovery.zip.md5
 
 	# Creating additional files for load&flash
 	echo -e ">>> create load&flash files\n"
 
-	cp $KAWORI_FILENAME.recovery.zip cm-kernel.zip
+	cp $ZIPPY_FILENAME.recovery.zip cm-kernel.zip
 	md5sum cm-kernel.zip > checksum
 }
 
@@ -301,11 +301,11 @@ step8_transfer_kernel()
 
 	# transfer only if SMB share configured
 	if [ ! -z "$SMB_SHARE_KERNEL" ]; then
-		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "mkdir $SMB_FOLDER_KERNEL\\$KAWORI_VERSION"
-		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/$KAWORI_FILENAME.recovery.zip $SMB_FOLDER_KERNEL\\$KAWORI_VERSION\\$KAWORI_FILENAME.recovery.zip"
-		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/$KAWORI_FILENAME.recovery.zip.md5 $SMB_FOLDER_KERNEL\\$KAWORI_VERSION\\$KAWORI_FILENAME.recovery.zip.md5"
-		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/checksum $SMB_FOLDER_KERNEL\\$KAWORI_VERSION\\checksum"
-		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/cm-kernel.zip $SMB_FOLDER_KERNEL\\$KAWORI_VERSION\\cm-kernel.zip"
+		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "mkdir $SMB_FOLDER_KERNEL\\$ZIPPY_VERSION"
+		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/$ZIPPY_FILENAME.recovery.zip $SMB_FOLDER_KERNEL\\$ZIPPY_VERSION\\$ZIPPY_FILENAME.recovery.zip"
+		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/$ZIPPY_FILENAME.recovery.zip.md5 $SMB_FOLDER_KERNEL\\$ZIPPY_VERSION\\$ZIPPY_FILENAME.recovery.zip.md5"
+		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/checksum $SMB_FOLDER_KERNEL\\$ZIPPY_VERSION\\checksum"
+		smbclient $SMB_SHARE_KERNEL -U $SMB_AUTH_KERNEL -c "put $REPACK_PATH/cm-kernel.zip $SMB_FOLDER_KERNEL\\$ZIPPY_VERSION\\cm-kernel.zip"
 		return
 	fi
 
@@ -314,12 +314,12 @@ step8_transfer_kernel()
 		rm -rf ~/bbuild_transfer
 		mkdir ~/bbuild_transfer
 		echo "$SSH_FTP_PW" | sshfs "$SSH_FTP_REMOTE" ~/bbuild_transfer -p "$SSH_FTP_PORT" -o password_stdin
-		mkdir -p ~/bbuild_transfer/$KAWORI_VERSION
+		mkdir -p ~/bbuild_transfer/$ZIPPY_VERSION
 
-		cp $REPACK_PATH/$KAWORI_FILENAME.recovery.zip ~/bbuild_transfer/$KAWORI_VERSION
-		cp $REPACK_PATH/$KAWORI_FILENAME.recovery.zip.md5 ~/bbuild_transfer/$KAWORI_VERSION
-		cp $REPACK_PATH/checksum ~/bbuild_transfer/$KAWORI_VERSION
-		cp $REPACK_PATH/cm-kernel.zip ~/bbuild_transfer/$KAWORI_VERSION
+		cp $REPACK_PATH/$ZIPPY_FILENAME.recovery.zip ~/bbuild_transfer/$ZIPPY_VERSION
+		cp $REPACK_PATH/$ZIPPY_FILENAME.recovery.zip.md5 ~/bbuild_transfer/$ZIPPY_VERSION
+		cp $REPACK_PATH/checksum ~/bbuild_transfer/$ZIPPY_VERSION
+		cp $REPACK_PATH/cm-kernel.zip ~/bbuild_transfer/$ZIPPY_VERSION
 
 		sync
 		sleep 1
@@ -339,7 +339,7 @@ step9_send_finished_mail()
 	if [ -z "$FINISH_MAIL_TO" ]; then
 		echo -e "No mail address configured, not sending mail.\n"	
 	else
-		cat $ROOT_PATH/compile.log | /usr/bin/mailx -s "Compilation for $KERNEL_NAME $KAWORI_VERSION finished!!!" $FINISH_MAIL_TO
+		cat $ROOT_PATH/compile.log | /usr/bin/mailx -s "Compilation for $KERNEL_NAME $ZIPPY_VERSION finished!!!" $FINISH_MAIL_TO
 	fi
 }
 
@@ -414,8 +414,8 @@ display_help()
 	echo
 	echo "Parameters:"
 	echo
-	echo "  KAWORI version: $KAWORI_VERSION"
-	echo "  KAWORI date:    $KAWORI_DATE"
+	echo "  ZIPPY version: $ZIPPY_VERSION"
+	echo "  ZIPPY date:    $ZIPPY_DATE"
 	echo "  Kernel name:     $KERNEL_NAME"
 	echo "  Git branch:      $GIT_BRANCH"
 	echo "  CPU Cores:       $NUM_CPUS"
@@ -426,7 +426,7 @@ display_help()
 	echo "  Source path:     $SOURCE_PATH"
 	echo "  Build path:      $BUILD_PATH"
 	echo "  Repack path:     $REPACK_PATH"
-	echo "  Kernel Filename: $KAWORI_FILENAME"
+	echo "  Kernel Filename: $ZIPPY_FILENAME"
 	echo
 	echo "======================================================================"
 }
